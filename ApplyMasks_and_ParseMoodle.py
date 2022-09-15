@@ -50,54 +50,56 @@ else:
 
     image_opts = image_opts+image_opts2
 
-    add_mask_flag = 1
+    add_mask_flag_opts = [0,1]
 
-    # DETECT THE FACE LANDMARKS
-    for iii in image_opts:
-        new_im_name = iii.split('/')[-1]
-        image = cv2.imread(iii)
-        with mp_face_mesh.FaceMesh(min_detection_confidence=0.4, min_tracking_confidence=0.4) as face_mesh:
-            # Flip the image horizontally and convert the color space from BGR to RGB
-            image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+    for iiii in add_mask_flag_opts:
+        add_mask_flag = iiii;\
+        # DETECT THE FACE LANDMARKS
+        for iii in image_opts:
+            new_im_name = iii.split('/')[-1]
+            image = cv2.imread(iii)
+            with mp_face_mesh.FaceMesh(min_detection_confidence=0.4, min_tracking_confidence=0.4) as face_mesh:
+                # Flip the image horizontally and convert the color space from BGR to RGB
+                image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
 
-            # To improve performance
-            image.flags.writeable = False
+                # To improve performance
+                image.flags.writeable = False
 
-            # Detect the face landmarks
-            results = face_mesh.process(image)
+                # Detect the face landmarks
+                results = face_mesh.process(image)
 
-            # To improve performance
-            image.flags.writeable = True
+                # To improve performance
+                image.flags.writeable = True
 
-            # Convert back to the BGR color space
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                # Convert back to the BGR color space
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-            plt.figure()
-            plt.imshow(np.fliplr(image[:,:,[2,1,0]]))
+                plt.figure()
+                plt.imshow(np.fliplr(image[:,:,[2,1,0]]))
 
-            iscale = image.shape
+                iscale = image.shape
 
-            try:
-                for face_no, face_landmarks in enumerate(results.multi_face_landmarks):
-                    mask_ol = np.zeros((2,len(Mask)))
-                    leftmask_ol = np.zeros((2,len(leftMask)))
-                    for counter,ind in enumerate(Mask):
-                        i = face_landmarks.landmark[ind]
-                        mask_ol[:,counter] = np.array([(1-i.x)*iscale[1],i.y*iscale[0]])
-                    for counter,ind in enumerate(leftMask):
-                        i = face_landmarks.landmark[ind]
-                        leftmask_ol[:,counter] = np.array([(1-i.x)*iscale[1],i.y*iscale[0]])
-                    if add_mask_flag == 1:
-                        plt.plot(mask_ol[0,:],mask_ol[1,:],c='black')
-                        plt.fill(mask_ol[0,:],mask_ol[1,:],c='white')
-                        plt.fill(leftmask_ol[0,:],leftmask_ol[1,:],c=[0.9,0.9,0.9])
-            except:
-                pass
-            plt.axis('off')
-            if add_mask_flag == 0:
-                plt.savefig('./Class_PhotoRoster/'+new_im_name[0:-4]+'.png')
-            else:
-                plt.savefig('./Class_PhotoRoster_masks/'+new_im_name[0:-4]+'.png')
+                try:
+                    for face_no, face_landmarks in enumerate(results.multi_face_landmarks):
+                        mask_ol = np.zeros((2,len(Mask)))
+                        leftmask_ol = np.zeros((2,len(leftMask)))
+                        for counter,ind in enumerate(Mask):
+                            i = face_landmarks.landmark[ind]
+                            mask_ol[:,counter] = np.array([(1-i.x)*iscale[1],i.y*iscale[0]])
+                        for counter,ind in enumerate(leftMask):
+                            i = face_landmarks.landmark[ind]
+                            leftmask_ol[:,counter] = np.array([(1-i.x)*iscale[1],i.y*iscale[0]])
+                        if add_mask_flag == 1:
+                            plt.plot(mask_ol[0,:],mask_ol[1,:],c='black')
+                            plt.fill(mask_ol[0,:],mask_ol[1,:],c='white')
+                            plt.fill(leftmask_ol[0,:],leftmask_ol[1,:],c=[0.9,0.9,0.9])
+                except:
+                    pass
+                plt.axis('off')
+                if add_mask_flag == 0:
+                    plt.savefig('./Class_PhotoRoster/'+new_im_name[0:-4]+'.png')
+                else:
+                    plt.savefig('./Class_PhotoRoster_masks/'+new_im_name[0:-4]+'.png')
 
 
 
