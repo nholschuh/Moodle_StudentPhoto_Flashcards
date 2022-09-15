@@ -97,9 +97,9 @@ else:
                     pass
                 plt.axis('off')
                 if add_mask_flag == 0:
-                    plt.savefig('./Class_PhotoRoster/'+new_im_name[0:-4]+'.png')
+                    plt.savefig('./Class_PhotoRoster/'+new_im_name[0:-4]+'.png',bbox_inches='tight', dpi=60)
                 else:
-                    plt.savefig('./Class_PhotoRoster_masks/'+new_im_name[0:-4]+'.png')
+                    plt.savefig('./Class_PhotoRoster_masks/'+new_im_name[0:-4]+'.png',bbox_inches='tight', dpi=60)
 
 
 
